@@ -5,7 +5,7 @@
     <?php foreach ($flashes as $type => $msgs): ?>
       <?php foreach ($msgs as $msg): ?>
         <div class="px-4 py-2 rounded shadow
-                    <?= $type==='success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' ?>">
+                    <?= $type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white' ?>">
           <?= htmlspecialchars($msg) ?>
         </div>
       <?php endforeach; ?>

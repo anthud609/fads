@@ -1,4 +1,5 @@
 <?php
+
 namespace BIMS\Core\Controllers;
 
 use BIMS\Core\Views\View;
