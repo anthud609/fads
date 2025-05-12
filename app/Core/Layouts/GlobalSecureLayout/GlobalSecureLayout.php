@@ -1,3 +1,4 @@
+<?php /** @var \BIMS\Core\Views\View $this */ ?>
 <?php
 // views/layout.php
 ?><!DOCTYPE html>
@@ -16,7 +17,7 @@
   <?php include __DIR__ . '/../Partials/Toast.php'; ?>
 
   <main class="flex-1 p-6">
-    <?= $content ?>
+    <?= $this->yield('content') ?>
   </main>
 
   <footer class="bg-gray-100 text-gray-700 p-4 text-sm text-center">

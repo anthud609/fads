@@ -24,7 +24,6 @@ $uri = rawurldecode($uri);
 $dispatcher = simpleDispatcher(function(RouteCollector $r) {
     $r->addRoute('GET',  '/',     ['BIMS\Core\Controllers\BaseController', 'index']);
     $r->addRoute('GET',  '/login', ['BIMS\Modules\IAM\Controllers\LoginController', 'showForm']);
-    $r->addRoute('POST', '/login', ['BIMS\Modules\IAM\Controllers\LoginController', 'login']);
     // …
 });
 

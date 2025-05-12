@@ -15,10 +15,4 @@ class LoginController extends BaseController
         );
     }
 
-    public function login(): void
-    {
-        // ... auth logic ...
-        View::flash('success', 'Logged in successfully.');
-        header('Location: /');
-    }
 }
