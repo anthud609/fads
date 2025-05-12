@@ -4,17 +4,19 @@ namespace BIMS\Core\Views;
 class View
 {
     protected string $viewPath;
-    protected array  $data      = [];
-    protected string $layout    = '';
-    protected array  $sections  = [];
+    protected array  $data           = [];
+    protected string $layout         = '';
+    protected array  $sections       = [];
     protected string $currentSection = '';
-    protected array  $flashes   = [];
+    protected array  $flashes        = [];
 
     public function __construct(string $viewPath, array $data = [])
     {
         $this->viewPath = $viewPath;
         $this->data     = $data;
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $this->flashes  = $_SESSION['flashes'] ?? [];
         unset($_SESSION['flashes']);
     }
@@ -24,14 +26,12 @@ class View
         return new self($viewPath, $data);
     }
 
-    /** Choose layout: e.g. "Core/Layouts/GlobalSecureLayout/GlobalSecureLayout" */
     public function layout(string $layout): self
     {
         $this->layout = $layout;
         return $this;
     }
 
-    /** Capture a named section */
     public function start(string $name): void
     {
         $this->currentSection = $name;
@@ -43,22 +43,21 @@ class View
         $this->sections[$this->currentSection] = ob_get_clean();
     }
 
-    /** Yield a section in a layout */
     public function yield(string $name): string
     {
         return $this->sections[$name] ?? '';
     }
 
-    /** Render the view (and wrap in layout if set) */
     public function render(): void
     {
         extract($this->data, EXTR_SKIP);
-        // --- Render main view into "content" ---
+
+        // render the view into 'content'
         ob_start();
         include $this->resolveFile($this->viewPath);
         $this->sections['content'] = ob_get_clean();
 
-        // --- If nested layout: wrap content in that layout ---
+        // wrap in layout if set
         if ($this->layout) {
             include $this->resolveFile($this->layout);
         } else {
@@ -66,14 +65,14 @@ class View
         }
     }
 
-    /** Flash helper */
     public static function flash(string $type, string $message): void
     {
-        session_start();
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $_SESSION['flashes'][$type][] = $message;
     }
 
-    /** Access flashes inside layouts */
     public function getFlashes(): array
     {
         return $this->flashes;
@@ -81,11 +80,14 @@ class View
 
     protected function resolveFile(string $path): string
     {
-        // path is relative to /app/, e.g. "Core/Views/Dashboard"
-        $file = dirname(__DIR__, 2) . '/app/' . $path . '.php';
+        // __DIR__ is .../app/Core/Views, so dirname(__DIR__,3) = project root
+        $basePath = dirname(__DIR__, 3) . '/app/';
+        $file     = $basePath . $path . '.php';
+
         if (! file_exists($file)) {
             throw new \RuntimeException("View file not found: {$file}");
         }
+
         return $file;
     }
 }
