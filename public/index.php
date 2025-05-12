@@ -20,9 +20,12 @@ if (false !== $pos = strpos($uri, '?')) {
 $uri = rawurldecode($uri);
 
 // 3) Define routes
+// …
 $dispatcher = simpleDispatcher(function(RouteCollector $r) {
-    $r->addRoute('GET', '/', ['BIMS\Core\Controllers\HomeController', 'index']);
-    // $r->addRoute('GET', '/users/{id:\d+}', ['App\Controllers\UserController', 'show']);
+    $r->addRoute('GET',  '/',     ['BIMS\Core\Controllers\HomeController', 'index']);
+    $r->addRoute('GET',  '/login', ['BIMS\Modules\IAM\Controllers\LoginController', 'showForm']);
+    $r->addRoute('POST', '/login', ['BIMS\Modules\IAM\Controllers\LoginController', 'login']);
+    // …
 });
 
 // 4) Dispatch
